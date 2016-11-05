@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+  
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+	<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Draggable Element</title>
+    <style type="text/css" media="screen">
+      html{overflow:hidden;}
+      .draggable {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100px;
+        height: 100px;
+        background-color: black;
+      }
+    </style>
+    <script type="text/javascript" charset="utf-8">
+
+      /* ==================== Draggable ==================== */
+	  //set event handlers for x/y position updates
+	  document.onmousemove = mouseMove;
+	  document.ontouchmove = touchMove;
+	  
+      //dragger object constructor
+      function Dragger (element) {
+        this.element = element;
+		//set mouse listeners
+		element.addEventListener('mousedown', mDown);
+		element.addEventListener('mouseup', mUp);
+		//set touch listeners
+		element.ontouchstart = tDown;
+	    element.ontouchend = tUp;
+      }
+	  
+	  //handle touch position updates
+	  function touchMove(e) {
+	    e.preventDefault(); //touch from scrolling
+		var touch = e.touches[0];
+	    var dragEle = document.querySelector('.draggable'); //select drag element
+	    if(dragEle.style.isdragging){
+		  dragEle.style.top = touch.clientY - dragEle.style.startY +'px';
+		  dragEle.style.left = touch.clientX - dragEle.style.startX +'px';
+	    }
+		else {
+		  document.body.removeAttribute("style");
+		}
+	  }
+	  //handle mouse position updates
+	  function mouseMove(e) {
+	    var dragEle = document.querySelector('.draggable'); //select drag element
+	    if(dragEle.style.isdragging){
+		  dragEle.style.top = window.event.clientY - dragEle.style.startY +'px';
+		  dragEle.style.left = window.event.clientX - dragEle.style.startX +'px';
+	    }
+		else {
+		  document.body.removeAttribute("style");
+		}
+	  }
+	  
+	  //touch down event handler (add style)
+	  function tDown (e) {
+	    var touch = e.touches[0];
+		var dragEle = document.querySelector('.draggable');
+		document.body.style.userSelect = "none";
+		document.body.style.webkitUserSelect = "none";
+		dragEle.style.backgroundColor = 'blue';
+		dragEle.style.borderStyle = 'solid';
+		dragEle.style.borderColor = 'black';
+		dragEle.style.zIndex = 10;
+		dragEle.style.startX = touch.clientX;
+		dragEle.style.startY = touch.clientY;
+		dragEle.style.isdragging = true;
+      }
+	  //touch up event handler (remove style)
+	  function tUp (e) {
+	    var dragEle = document.querySelector('.draggable');
+        dragEle.style.isdragging = false;
+		dragEle.style.borderStyle = '';
+		dragEle.style.borderColor = '';
+		dragEle.style.backgroundColor = 'black';
+		dragEle.style.startX = 0;
+		dragEle.style.startY = 0;
+		dragEle.style.top = 0 +'px';
+		dragEle.style.left = 0 +'px';
+		this.removeAttribute("style");
+      }
+	  //mouse down event handler (add style)
+	  function mDown () {
+		document.body.style.userSelect = "none";
+		document.body.style.webkitUserSelect = "none";
+		this.style.backgroundColor = 'blue';
+		this.style.borderStyle = 'solid';
+		this.style.borderColor = 'black';
+		this.style.zIndex = 10;
+		this.style.startX = window.event.clientX;
+		this.style.startY = window.event.clientY;
+		this.style.isdragging = true;
+      }
+	  //mouse up event handler (remove style)
+	  function mUp () {
+        this.style.isdragging = false;
+		this.style.borderStyle = '';
+		this.style.borderColor = '';
+		this.style.backgroundColor = 'black';
+		this.style.startX = 0;
+		this.style.startY = 0;
+		this.style.top = 0 +'px';
+		this.style.left = 0 +'px';
+		this.removeAttribute("style");
+      }
+
+      /***
+      *
+      * TODO
+      *
+      *   + make the element draggable on both desktop and iPhone WebKit
+      *   + add event listeners on the element to ensure that it can be dragged
+      *   + ensure no text is selected as you drag the element
+      *   + ensure the element always snaps to the user's mouse pointer or finger
+      *   + apply an interesting style to the element as it's dragged using more than one CSS property
+      *   + when dragging completes, make the element snap back to its original position with a smooth, animated transition
+      *     and remove the interesting style you've added while it was draggable after the animation has completed
+      *   + ensure you get the best performance on iPhone
+      *   + do not use function closures
+      *   + do not use global variables
+      *   + do not use timers
+      *
+      ***/
+
+      /* ==================== Init ==================== */
+
+      function init () {
+        // attach the draggable behavior to our draggable element
+        new Dragger(document.querySelector('.draggable'));
+      }
+
+      window.addEventListener('DOMContentLoaded', init, false);
+
+    </script>
+  </head>
+  
+  <body>
+    
+    <div class="draggable"></div>
+    
+    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+
+    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+
+    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+
+    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+
+    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+
+    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+    
+  </body>
+
+</html>
